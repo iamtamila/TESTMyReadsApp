@@ -1,9 +1,8 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
+import * as BookUtils from './BookUtils';
 import './App.css'
-import { Route } from 'react-router-dom'
 import Bookcase from './components/Bookcase';
-import Search from './components/Search';
 
 class BooksApp extends React.Component {
   state = {
@@ -21,11 +20,25 @@ class BooksApp extends React.Component {
       this.refreshAllBooks();
     }
   }
+
+  refreshAllBooks = () => {
+    // Get the books currently on the bookshelves and update the state with the
+    // returned, sorted list
+    BooksAPI
+      .getAll()
+      .then((list) => {
+        this.setState({
+          books: BookUtils.sortAllBooks(list),
+          newBook: false
+        });
+      });
+  }
+
   render() {
     return (
-      <Bookcase/>
+      (<Bookcase books={this.state.books} onRefreshAllBooks={this.refreshAllBooks}/>
     )
-  }
+    )}
 }
 
 export default BooksApp
