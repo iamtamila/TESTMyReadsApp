@@ -6,11 +6,7 @@ class Book extends Component {
         shelfSelection: this.props.book.shelf || "none"
     }
     render() {
-        const authors = this.props.book.authors && this
-            .props
-            .book
-            .authors
-            .join(' | ');
+        const authors = this.props.book.authors && this.props.book.authors.join(' | ');
         let url = (this.props.book.imageLinks && `url(${this.props.book.imageLinks.thumbnail})`);
         return (
             <div className="book">

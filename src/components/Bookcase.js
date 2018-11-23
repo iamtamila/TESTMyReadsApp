@@ -5,31 +5,21 @@ import Shelf from "./Shelf"
 class Bookcase extends Component {
     state = {}
     componentDidMount = () => {
-        this
-            .props
-            .onRefreshAllBooks();
+        this.props.onRefreshAllBooks();
     }
+    //create shelves with its names
     updateShelves = () => {
         const newCurrent = {
             name: "Currently Reading",
-            books: this
-                .props
-                .books
-                .filter(book => book.shelf === 'currentlyReading')
+            books: this.props.books.filter(book => book.shelf === 'currentlyReading')
         };
         const newWant = {
             name: "Want to Read",
-            books: this
-                .props
-                .books
-                .filter(book => book.shelf === "wantToRead")
+            books: this.props.books.filter(book => book.shelf === "wantToRead")
         };
         const newRead = {
             name: "Read",
-            books: this
-                .props
-                .books
-                .filter(book => book.shelf === "read")
+            books: this.props.books.filter(book => book.shelf === "read")
         };
         return ([newCurrent, newWant, newRead]);
     }

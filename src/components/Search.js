@@ -16,51 +16,36 @@ class Search extends Component {
     queryTimer = null;
 
     changeQuery = (value) => {
-        // Update the query then wait a quarter second before actually executing the
-        // search
+        //query timer for search line
         clearTimeout(this.queryTimer);
         this.setState({ query: value });
         this.queryTimer = setTimeout(this.updateSearch, 250);
     }
-
     updateSearch = () => {
-        // Never search on an empty string
+        // no data for empty serach line
         if (this.state.query === "") {
             this.setState({ error: false, books: [] });
             return;
         }
-
-        // Execute the search on the query string and then process the response
-        BooksAPI
-            .search(this.state.query)
-            .then(response => {
-                let newList = [];
-                let newError = false;
-                // Check that there wasn't an error, then check whether there are books in the
-                // return, and finally act as if there were no books matching the search if all
-                // else fails
-                if (response === undefined || (response.error && response.error !== "empty query")) {
-                    newError = true;
-                } else if (response.length) {
-                    // Check the list of books the user already has on their shelves against the
-                    // search results and apply shelf data accordingly
-                    newList = BookUtils.mergeShelfAndSearch(this.props.selectedBooks, response);
-                    newList = BookUtils.sortAllBooks(newList);
-                }
-
-                // Set the state based on the new response
-                this.setState({ error: newError, books: newList });
-            })
+        BooksAPI.search(this.state.query).then(response => {
+            let newList = [];
+            let newError = false;
+            // checking for errors and books that doesn't match user's search
+            if (response === undefined || (response.error && response.error !== "empty query")) {
+                newError = true;
+            } else if (response.length) {
+                newList = BookUtils.mergeShelfAndSearch(this.props.selectedBooks, response);
+                newList = BookUtils.sortAllBooks(newList);
+            }
+            this.setState({ error: newError, books: newList });
+        })
     }
-
     componentWillReceiveProps = (props) => {
-        // Re-merge and sort the shelf and search lists and set the state
         this.props = props;
         let newList = BookUtils.mergeShelfAndSearch(this.props.selectedBooks, this.state.books);
         newList = BookUtils.sortAllBooks(newList);
         this.setState({ books: newList });
     }
-
     render() {
         return (
             <div className="search-books">
@@ -77,26 +62,22 @@ class Search extends Component {
                 <div className="search-books-results">
                     {this.state.error && (
                         <div className="search-error">
-                            There was a problem with your search</div>
+                            search error</div>
                     )}
                     {!this.state.error && (
                         <span className="search-count">
-                            {this.state.books.length}&nbsp; books match your search
+                            {this.state.books.length}&nbsp; matching books
                         </span>
                     )}
-
                     <ol className="books-grid">
-                        {this.state.books && this
-                            .state
-                            .books
-                            .map(book => (
-                                <li key={book.id}>
-                                    <Book
-                                        book={book}
-                                        onChangeShelf={this.props.onChangeShelf}
-                                        onUpdateQuickView={this.updateQuickView} />
-                                </li>
-                            ))}
+                        {this.state.books && this.state.books.map(book => (
+                            <li key={book.id}>
+                                <Book
+                                    book={book}
+                                    onChangeShelf={this.props.onChangeShelf}
+                                    onUpdateQuickView={this.updateQuickView} />
+                            </li>
+                        ))}
                     </ol>
                 </div>
             </div >
