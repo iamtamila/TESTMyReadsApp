@@ -1,19 +1,15 @@
 import React, { Component } from 'react'
-import * as BooksAPI from '../BooksAPI'
+import { Link } from 'react-router-dom';
 import Shelf from "./Shelf"
+
 class Bookcase extends Component {
     state = {}
-
     componentDidMount = () => {
-        // Update the list of all books
         this
             .props
             .onRefreshAllBooks();
     }
-
     updateShelves = () => {
-        // Update the state of the individual shelves to contain the appropriate books
-        // for each
         const newCurrent = {
             name: "Currently Reading",
             books: this
@@ -35,15 +31,12 @@ class Bookcase extends Component {
                 .books
                 .filter(book => book.shelf === "read")
         };
-
         return ([newCurrent, newWant, newRead]);
     }
-
     render() {
         let shelves = [];
-        if (this.props.books && this.props.books.length) 
+        if (this.props.books && this.props.books.length)
             shelves = this.updateShelves();
-        
         return (
             <div className="app">
                 <div className="list-books">
@@ -55,11 +48,12 @@ class Bookcase extends Component {
                             {shelves && shelves.map((shelf) => (<Shelf
                                 key={shelf.name}
                                 shelf={shelf}
+                                onChangeShelf={this.props.onChangeShelf}
                             />))}
                         </div>
                     </div>
                     <div className="open-search">
-                        <a onClick={() => this.setState({showSearchPage: true})}>Add a book</a>
+                        <Link to='/search'>Add a book</Link>
                     </div>
                 </div>
             </div>
